@@ -4,12 +4,18 @@ if (empty($tmTabs)): ?>
 
   <?php foreach ($tmFields AS $field => $ft): ?>
     <?php $ft = $tmFields[$field];
+      $countfield = ${$field};
+      if ( is_countable($countfield) ) {
+        $countfield = count($countfield);
+      }else{
+        $countfield = strlen($countfield);
+      }
     if ($tmFields[$field] instanceof \Concrete\Package\Tmblocks\Src\FieldTypes\BlockFieldTypeRepeatable):?>
         <div id="ccm-repeatable-<?php echo $field; ?>">
             <button type="button"
                     class="btn btn-success ccm-add-<?php echo $field; ?>-entry"><?php echo t($ft->getAddButtonName()); ?></button>
             <div class="ccm-<?php echo $field; ?>-entries"
-                 data-init-max-sort="<?php echo sizeOf(${$field}); ?>">
+                 data-init-max-sort="<?php echo $countfield; ?>">
               <?php $i = 0; ?>
               <?php if (isset(${$field})): ?>
                 <?php foreach (${$field} AS $childFieldValue): ?>
@@ -64,12 +70,18 @@ if (empty($tmTabs)): ?>
       <div id="ccm-tab-content-<?php echo $tabid; ?>" class="ccm-tab-content">
         <?php foreach ($tab['fields'] AS $field): ?>
           <?php $ft = $tmFields[$field];
+            $countfield = ${$field};
+            if ( is_countable($countfield) ) {
+              $countfield = count($countfield);
+            }else{
+              $countfield = strlen($countfield);
+            }
           if ($tmFields[$field] instanceof \Concrete\Package\Tmblocks\Src\FieldTypes\BlockFieldTypeRepeatable):?>
               <div id="ccm-repeatable-<?php echo $field; ?>">
                   <button type="button"
                           class="btn btn-success ccm-add-<?php echo $field; ?>-entry"><?php echo t($ft->getAddButtonName()); ?></button>
                   <div class="ccm-<?php echo $field; ?>-entries"
-                       data-init-max-sort="<?php echo sizeOf(${$field}); ?>">
+                       data-init-max-sort="<?php echo $countfield; ?>">
                     <?php $i = 0; ?>
                     <?php if (isset(${$field})): ?>
                       <?php foreach (${$field} AS $childFieldValue): ?>
