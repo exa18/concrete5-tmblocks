@@ -45,6 +45,19 @@ Replace `icon.png` with something matching to your new block.
 ### 2.4 Configure controller.php
 
 At first fill in the names of your new block: namespace, description and type name.
+
+    use \Concrete\Core\Block\BlockController;
+    use Concrete\Package\Tmblocks\Src\TmBlockController;
+
+List of all namespaces for field types:
+
+    use Concrete\Package\Tmblocks\Src\FieldTypes\BlockFieldTypeString;
+    use Concrete\Package\Tmblocks\Src\FieldTypes\BlockFieldTypeSelect;
+    use Concrete\Package\Tmblocks\Src\FieldTypes\BlockFieldTypePage;
+    use Concrete\Package\Tmblocks\Src\FieldTypes\BlockFieldTypeImage;
+    use Concrete\Package\Tmblocks\Src\FieldTypes\BlockFieldTypeWYSIWYG;
+    use Concrete\Package\Tmblocks\Src\FieldTypes\BlockFieldTypeRepeatable;
+    use Concrete\Package\Tmblocks\Src\FieldTypes\BlockFieldTypeBoolean;
   
 #### 2.4.1 Configure fields
 
@@ -236,6 +249,10 @@ For repeatables you need a new table and no new field in the main table.
     <unsigned/>
     <autoincrement/>
   </field>
+  <field name="bID" type="I">
+    <unsigned/>
+  </field>
+  <field name="sort" type="I"></field>
   <!-- Fill in the child fields as you would do for the main table -->
 </table>
 ```

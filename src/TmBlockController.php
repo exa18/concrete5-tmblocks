@@ -13,7 +13,7 @@ use Config;
 use Concrete\Core\Legacy\BlockRecord;
 use Concrete\Core\Block\BlockController;
 use Concrete\Package\Tmblocks\Src\FieldTypes\BlockFieldTypeSelect;
-use Concrete\Package\Tmblocks\Src\FieldTypes\BlockFieldTypeBoolean;
+#use Concrete\Package\Tmblocks\Src\FieldTypes\BlockFieldTypeBoolean;
 
 
 abstract class TmBlockController extends BlockController
@@ -39,15 +39,15 @@ abstract class TmBlockController extends BlockController
     parent::__construct($obj);
 
     $cssClass = new BlockFieldTypeSelect();
-    $cssClass->setRequired(true);
+    #$cssClass->setRequired(true);
     $cssClass->setName("CSS-Class");
     $cssClass->setChoices(array('none' => 'none'));
     $this->tmFields["cssClass"] = $cssClass;
-
+    /*
     $ignoreGrid = new BlockFieldTypeBoolean();
     $ignoreGrid->setName("Ignore Grid");
     $this->tmFields["ignoreGrid"] = $ignoreGrid;
-
+    */
 
   }
 
@@ -223,24 +223,26 @@ abstract class TmBlockController extends BlockController
       $db = Database::get();
 
       $i = 0;
-      foreach ($args[$k] AS $data) {
+      if ( isset($args[$k]) ) {
+        foreach ($args[$k] AS $data) {
 
-        $i++;
-        $data['sort'] = $i;
-        $data['bID'] = $this->record->bID;
+          $i++;
+          $data['sort'] = $i;
+          $data['bID'] = $this->record->bID;
 
-        if(isset($thisRepeatableData[$data["iID"]])){
-          $db->update($this->btTable . ucfirst($k), $data, array('iID' => $data["iID"]));
-          unset($thisRepeatableData[$data["iID"]]);
-        }else{
-          $db->insert($this->btTable . ucfirst($k), $data);
+          if(isset($thisRepeatableData[$data["iID"]])){
+            $db->update($this->btTable . ucfirst($k), $data, array('iID' => $data["iID"]));
+            unset($thisRepeatableData[$data["iID"]]);
+          }else{
+            $db->insert($this->btTable . ucfirst($k), $data);
+          }
         }
       }
-
       foreach($thisRepeatableData AS $deleteRow){
         $db->delete($this->btTable . ucfirst($k), array('iID' => $deleteRow["iID"]));
       }
     }
+    
 
   }
 

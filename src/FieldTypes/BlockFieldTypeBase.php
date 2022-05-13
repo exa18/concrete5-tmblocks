@@ -28,8 +28,7 @@ abstract class BlockFieldTypeBase {
     return t($this->name);
   }
 
-  public function getSearchableContent($value)
-  {
+  public function getSearchableContent($value){
     return "";
   }
 
@@ -38,7 +37,6 @@ abstract class BlockFieldTypeBase {
   }
 
   public function getAssets(){
-
     return array();
   }
 
@@ -87,17 +85,14 @@ abstract class BlockFieldTypeBase {
   }
   
   protected function getFormMarkupColor($form,$view,$k,$value){
-
         return $this->getLabel($form,$k).Core::make('helper/form/color')->output($view->field($k), $value, array('preferredFormat' => 'hex'));
-    }
+  }
 
   protected function getFormMarkupLabel($form,$view,$k,$value){
-
      return "<label>".t($this->getName())."</label>";
   }
 
   protected function getFormMarkupCheckbox($form,$view,$k,$value){
-
     return "<label>".$form->checkbox($k, 1, (!is_null($value) && $value != 0))."&nbsp;".t($this->getName())."</label>";
   }
 
@@ -119,8 +114,7 @@ abstract class BlockFieldTypeBase {
 
   protected function getFormMarkupImage($form,$view,$k,$value)
   {
-syslog(LOG_DEBUG, "---");
-
+  #syslog(LOG_DEBUG, "---");
 
     if (isset($value) && $value > 0) {
       $value_o = File::getByID($value);
@@ -156,7 +150,6 @@ syslog(LOG_DEBUG, "---");
   }
 
   public function getFormMarkupForRepeatable($form,$view,$k,$value, $field,$i){
-
     $markup = $this->getFormMarkup($form,$view,$k,$value);
 
     return preg_replace(array(
