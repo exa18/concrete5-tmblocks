@@ -19,7 +19,7 @@ class Controller extends Package
 
   protected $pkgHandle = 'tmblocks';
   protected $appVersionRequired = '5.7.5';
-  protected $pkgVersion = '0.9.16';
+  protected $pkgVersion = '0.9.20';
 
 
   public function getPackageDescription()

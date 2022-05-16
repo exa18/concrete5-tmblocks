@@ -1,127 +1,84 @@
 <?php defined("C5_EXECUTE") or die("Access Denied.");
 
-if (empty($tmTabs)): ?>
+function makeHTMLform( $field, $tmFields, $form, $view ){
+    $html = [];
 
-  <?php foreach ($tmFields AS $field => $ft): ?>
-    <?php $ft = $tmFields[$field];
-      $countfield = ${$field};
-      if ( is_countable($countfield) ) {
+    $ft = $tmFields[$field];
+    $countfield = ${$field};
+    if ( is_countable($countfield) ) {
         $countfield = count($countfield);
-      }else{
+    }else{
         $countfield = strlen($countfield);
-      }
-    if ($tmFields[$field] instanceof \Concrete\Package\Tmblocks\Src\FieldTypes\BlockFieldTypeRepeatable):?>
-        <div id="ccm-repeatable-<?php echo $field; ?>">
-            <button type="button"
-                    class="btn btn-success ccm-add-<?php echo $field; ?>-entry"><?php echo t($ft->getAddButtonName()); ?></button>
-            <div class="ccm-<?php echo $field; ?>-entries"
-                 data-init-max-sort="<?php echo $countfield; ?>">
-              <?php $i = 0; ?>
-              <?php if (isset(${$field})): ?>
-                <?php foreach (${$field} AS $childFieldValue): ?>
-                      <div class="repeatable-block">
-                        <?php $i++; ?>
-                          <button type="button" class="btn btn-danger repeatable-remove"
-                                  id="ccm-remove-<?php echo $field; ?>-<?php echo $i; ?>"><?php echo t('Remove'); ?></button>
-                          <i class="fa fa-arrows repeatable-drag"></i>
-                        <?php foreach ($ft->getChildTypes() AS $childField => $childFt): ?>
-                          <?php echo $childFt->getFormMarkupForRepeatable($form, $view, $childField, $childFieldValue[$childField], $field, $i); ?>
-                        <?php endforeach; ?>
-                      </div>
-                <?php endforeach; ?>
-              <?php endif; ?>
-            </div>
-        </div>
-        <template type="text/template" id="template-<?php echo $field; ?>">
-            <div class="repeatable-block">
-                <button type="button" class="btn btn-danger repeatable-remove"
-                        id="ccm-remove-<?php echo $field; ?>-<%= i %>"><?php echo t('Remove'); ?></button>
-                <i class="fa fa-arrows repeatable-drag"></i>
-              <?php foreach ($ft->getChildTypes() AS $childField => $childFt): ?>
-                <?php echo $childFt->getFormMarkupForTemplate($form, $view, $childField, null); ?>
-              <?php endforeach; ?>
-            </div>
-        </template>
-        <script type="text/javascript">
-          $("#ccm-repeatable-<?php echo $field; ?>").tm_repeatable({
-            'field': "<?php echo $field; ?>"
-          });
+    }
+    if ($tmFields[$field] instanceof \Concrete\Package\Tmblocks\Src\FieldTypes\BlockFieldTypeRepeatable){
 
-        </script>
-    <?php else: ?>
-        <div class="form-group">
-          <?php echo $ft->getFormMarkup($form, $view, $field, ${$field}); ?>
-        </div>
-    <?php endif; ?>
-  <?php endforeach; ?>
-
-<?php else:
-
-  $tabs = array();
-  $init = true;
-  foreach ($tmTabs AS $tabid => $tab):
-    $tabs[] = array($tabid, $tab["title"], $init);
-    $init = false;
-  endforeach;
-
-  echo Core::make('helper/concrete/ui')->tabs($tabs);
-
-  foreach ($tmTabs AS $tabid => $tab): ?>
-      <div id="ccm-tab-content-<?php echo $tabid; ?>" class="ccm-tab-content">
-        <?php foreach ($tab['fields'] AS $field): ?>
-          <?php $ft = $tmFields[$field];
-            $countfield = ${$field};
-            if ( is_countable($countfield) ) {
-              $countfield = count($countfield);
-            }else{
-              $countfield = strlen($countfield);
+        $html[] = '<div id="ccm-repeatable-'.$field.'">
+            <button type="button" class="btn btn-success ccm-add-'.$field.'-entry">'.t($ft->getAddButtonName()).'</button>
+            <div class="ccm-'.$field.'-entries" data-init-max-sort="'.$countfield.'">';
+            $i = 0;
+            if (isset(${$field})){
+                foreach (${$field} as $childFieldValue){
+                    $i++;
+                    $html[] = '<div class="repeatable-block">
+                        <button type="button" class="btn btn-danger repeatable-remove" id="ccm-remove-'.$field.'-'.$i.'">'.t('Remove').'</button>
+                        <i class="fa fa-arrows repeatable-drag"></i>';
+                        foreach ($ft->getChildTypes() as $childField => $childFt){
+                            $html[] = $childFt->getFormMarkupForRepeatable($form, $view, $childField, $childFieldValue[$childField], $field, $i);
+                        }
+                    $html[] = '</div>';
+                }
             }
-          if ($tmFields[$field] instanceof \Concrete\Package\Tmblocks\Src\FieldTypes\BlockFieldTypeRepeatable):?>
-              <div id="ccm-repeatable-<?php echo $field; ?>">
-                  <button type="button"
-                          class="btn btn-success ccm-add-<?php echo $field; ?>-entry"><?php echo t($ft->getAddButtonName()); ?></button>
-                  <div class="ccm-<?php echo $field; ?>-entries"
-                       data-init-max-sort="<?php echo $countfield; ?>">
-                    <?php $i = 0; ?>
-                    <?php if (isset(${$field})): ?>
-                      <?php foreach (${$field} AS $childFieldValue): ?>
-                            <div class="repeatable-block">
-                              <?php $i++; ?>
-                                <button type="button" class="btn btn-danger repeatable-remove"
-                                        id="ccm-remove-<?php echo $field; ?>-<?php echo $i; ?>"><?php echo t('Remove'); ?></button>
-                                <i class="fa fa-arrows repeatable-drag"></i>
-                              <?php foreach ($ft->getChildTypes() AS $childField => $childFt): ?>
-                                <?php echo $childFt->getFormMarkupForRepeatable($form, $view, $childField, $childFieldValue[$childField], $field, $i); ?>
-                              <?php endforeach; ?>
-                            </div>
-                      <?php endforeach; ?>
-                    <?php endif; ?>
-                  </div>
-              </div>
-              <template type="text/template" id="template-<?php echo $field; ?>">
-                  <div class="repeatable-block">
-                      <button type="button" class="btn btn-danger repeatable-remove"
-                              id="ccm-remove-<?php echo $field; ?>-<%= i %>"><?php echo t('Remove'); ?></button>
-                      <i class="fa fa-arrows repeatable-drag"></i>
-                    <?php foreach ($ft->getChildTypes() AS $childField => $childFt): ?>
-                      <?php echo $childFt->getFormMarkupForTemplate($form, $view, $childField, null); ?>
-                    <?php endforeach; ?>
-                  </div>
-              </template>
-              <script type="text/javascript">
-                $("#ccm-repeatable-<?php echo $field; ?>").tm_repeatable({
-                  'field': "<?php echo $field; ?>"
-                });
+            $html[] = '</div></div>';
+        
+        $html[] = '<template type="text/template" id="template-'.$field.'">
+            <div class="repeatable-block">
+            <button type="button" class="btn btn-danger repeatable-remove" id="ccm-remove-'.$field.'-<%= i %>">'.t('Remove').'</button>
+            <i class="fa fa-arrows repeatable-drag"></i>';
+            foreach ($ft->getChildTypes() as $childField => $childFt){
+                $html[] = $childFt->getFormMarkupForTemplate($form, $view, $childField, null);
+            }
+        $html[] = '</div></template>';
+        $html[] = '<script type="text/javascript"> $("#ccm-repeatable-'.$field.'").tm_repeatable({ '."'field'".': "'.$field.'" }); </script>';
+    }else{
+        $html[] = '<div class="form-group">'. $ft->getFormMarkup($form, $view, $field, ${$field}).'</div>';
+    }
 
-              </script>
-          <?php else: ?>
-              <div class="form-group">
-                <?php echo $ft->getFormMarkup($form, $view, $field, ${$field}); ?>
-              </div>
-          <?php endif; ?>
-        <?php endforeach; ?>
-      </div>
-  <?php endforeach; ?>
+    return implode('',$html);
+}
+/*
+    MAKE
+*/
+$html = [];
 
-<?php endif; ?>
-<div id="tm-form-dialog"></div>
+if (empty($tmTabs)){
+
+    foreach ($tmFields as $field => $ft){
+        $html[] = makeHTMLform( $field, $tmFields, $form, $view );
+    }
+
+}else{
+
+        $tabs = [];
+        $init = true;   # checks first tab active
+    foreach ($tmTabs as $tabid => $tab){
+        $tabs[] = [ $tabid, $tab["title"], $init ];
+        $init = false;
+    }
+
+    $html[] = Core::make('helper/concrete/ui')->tabs($tabs);
+
+    foreach ($tmTabs as $tabid => $tab){
+        $html[] = '<div id="ccm-tab-content-'.$tabid.'" class="ccm-tab-content">';
+        foreach ($tab['fields'] as $field){
+            $html[] = makeHTMLform( $field, $tmFields, $form, $view );
+        }
+        $html[] = '</div>';
+    }
+
+}
+$html[] = '<div id="tm-form-dialog"></div>';
+
+# print all (remove whitespaces between ><)
+echo trim( preg_replace('/\>\s+\</m', '><', implode('',$html) ) );
+
+?>
